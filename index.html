@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AD-VERIFY GLOBAL | Enterprise</title>
+    <style>
+        :root {
+            --bg-dark: #0b0f1a;
+            --panel-dark: #161b26;
+            --blue: #2563eb;
+            --purple: #9333ea;
+            --orange: #f97316;
+            --green: #22c55e;
+            --text-main: #f8fafc;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; height: 100%; overflow-x: hidden; }
+
+        /* --- LOGO CSS (برمجي بالكامل) --- */
+        .logo-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .logo-icon {
+            width: 45px; height: 45px; background: var(--blue); border-radius: 10px;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+        }
+        .logo-icon::before {
+            content: "AV"; color: white; font-weight: 900; font-size: 20px; letter-spacing: -2px;
+        }
+        .logo-text { color: white; font-weight: 800; font-size: 1.5rem; letter-spacing: 1px; }
+
+        /* --- LOGIN SCREEN --- */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 10000;
+        }
+        .login-card {
+            background: var(--panel-dark); padding: 40px; border-radius: 20px;
+            width: 90%; max-width: 380px; text-align: center; border: 1px solid #2d3748;
+        }
+        .login-card p { color: #94a3b8; font-size: 0.85rem; margin-bottom: 30px; }
+        input {
+            width: 100%; padding: 15px; background: #0b0f1a; border: 1px solid #334155;
+            color: white; border-radius: 10px; text-align: center; font-weight: bold; margin-bottom: 20px; box-sizing: border-box;
+        }
+        .auth-btn {
+            width: 100%; padding: 15px; background: var(--blue); color: white; border: none;
+            border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+
+        /* --- MAIN DASHBOARD (Hidden Initially) --- */
+        #main-app { display: none; background: #f1f5f9; min-height: 100vh; }
+
+        header {
+            background: white; padding: 12px 20px; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 999;
+        }
+        .header-logo { display: flex; align-items: center; gap: 8px; }
+        .header-logo .logo-icon { width: 30px; height: 30px; border-radius: 6px; }
+        .header-logo .logo-icon::before { font-size: 14px; }
+        .header-logo .logo-text { color: var(--bg-dark); font-size: 1rem; }
+
+        .wp-box { background: #dcfce7; color: #166534; padding: 6px 15px; border-radius: 8px; font-weight: 800; font-size: 0.9rem; }
+
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+
+        /* Streams Vertical List */
+        .streams-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; }
+        .stream-btn {
+            padding: 20px; border-radius: 12px; color: white; cursor: pointer;
+            border: none; text-align: left; font-weight: 800; font-size: 1.1rem;
+            display: flex; justify-content: space-between; align-items: center; transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .s1 { background: var(--blue); }
+        .s2 { background: var(--purple); }
+        .s3 { background: var(--orange); }
+        .s4 { background: var(--green); }
+
+        .stream-btn:active { transform: scale(0.98); }
+        .stream-btn span { font-size: 0.6rem; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 5px; }
+
+        iframe {
+            width: 100%; height: 800px; border: 1px solid #e2e8f0;
+            border-radius: 15px; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-card">
+            <div class="logo-wrap">
+                <div class="logo-icon"></div>
+                <div class="logo-text">AD-VERIFY</div>
+            </div>
+            <p>Enter Enterprise Access Key</p>
+            <input type="text" id="access-input" placeholder="XXXX-XXXX-XXXX">
+            <button class="auth-btn" onclick="validateSession()">AUTHORIZE ACCESS</button>
+            <div id="err" style="color:#ef4444; font-size: 0.75rem; margin-top: 15px; display: none; font-weight: bold;">INVALID AUTHORIZATION KEY</div>
+        </div>
+    </div>
+
+    <div id="main-app">
+        <header>
+            <div class="header-logo">
+                <div class="logo-icon"></div>
+                <div class="logo-text">AD-VERIFY</div>
+            </div>
+            <div class="wp-box"><span id="balance">0.00</span> WP</div>
+        </header>
+
+        <div class="container">
+            <div class="streams-list">
+                <button class="stream-btn s1" onclick="loadContent('LINK_1')">
+                    DATA STREAM 01 <span>STABLE</span>
+                </button>
+                <button class="stream-btn s2" onclick="loadContent('LINK_2')">
+                    DATA STREAM 02 <span>STABLE</span>
+                </button>
+                <button class="stream-btn s3" onclick="loadContent('LINK_3')">
+                    DATA STREAM 03 <span>STABLE</span>
+                </button>
+                <button class="stream-btn s4" onclick="loadContent('LINK_4')">
+                    DATA STREAM 04 <span>STABLE</span>
+                </button>
+            </div>
+
+            <iframe id="app-frame" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // مصفوفة مفاتيح الدخول
+        const keys = ["Z9P-Q2X", "K4R-V8N", "B7W-L1M", "H5S-D3J", "F9G-A6K", "T2Y-P5Q", "X8W-R4V", "N1M-L7B", "J3S-H9D", "K6A-G5F", "Q4P-Y2T", "V8N-X7W", "L1B-M3N", "D9H-S5J", "G6F-K4A", "Y2T-Q9P", "W7X-V8N", "M3N-L1B", "S5J-D9H", "A4K-G6F", "P9Q-Y2T", "X7W-V8N", "B1L-M3N", "H9D-S5J", "K6F-A4K", "T2P-Q9Q", "V8N-X7W", "M3B-L1L", "S5H-D9D", "G6A-K6F", "Y2Q-T2P", "W7V-X7N", "L1L-M3B", "D9D-S5H", "A4G-G6A", "Q9P-Y2Q", "X7N-W7V", "B1M-L1L", "H9S-D9D", "K6K-A4G", "T2T-Q9P", "V8V-X7N", "M3J-B1M", "S5F-H9S", "G6G-K6K", "Y2V-T2T", "W7W-V8V", "L1N-M3J", "D9A-S5F", "A4P-G6G", "Q9R-Y2V", "X7L-W7W", "B1S-L1N", "H9H-D9A", "K6D-A4P", "T2M-Q9R", "V8F-X7L", "M3K-B1S", "S5A-H9H", "G6Q-K6D", "Y2X-T2M", "W7Y-V8F", "L1G-M3K", "D9P-S5A", "A4V-G6Q", "Q9S-Y2X", "X7B-W7Y", "B1T-L1G", "H9W-D9P", "K6M-A4V", "T2D-Q9S", "V8L-X7B", "M3S-B1T", "S5X-H9W", "G6N-K6M", "Y2G-T2D", "W7J-V8L", "L1P-M3S", "D9M-S5X", "A4B-G6N", "Q9V-Y2G", "X7H-W7J", "B1V-L1P", "H9T-D9M", "K6S-A4B", "T2A-Q9V", "V8G-X7H", "M3P-B1V", "S5W-H9T", "G6K-K6S", "Y2L-T2A", "W7F-V8G", "L1X-M3P", "D9K-S5W", "A4M-G6K", "Q9N-Y2L", "X7A-W7F", "B2R-L1X", "H1D-D9K", "K9F-A4M"];
+
+        function validateSession() {
+            const val = document.getElementById('access-input').value.trim().toUpperCase();
+            if(keys.includes(val)) {
+                // الحل القاتل: حذف صفحة الدخول من الـ DOM نهائياً
+                const loginLayer = document.getElementById('login-overlay');
+                loginLayer.remove(); 
+                
+                // إظهار لوحة التحكم
+                document.getElementById('main-app').style.display = 'block';
+                
+                // تحميل أول Stream تلقائياً
+                loadContent('رابط_العرض_الخاص_بك');
+            } else {
+                document.getElementById('err').style.display = 'block';
+            }
+        }
+
+        function loadContent(url) {
+            document.getElementById('app-frame').src = url;
+        }
+    </script>
+</body>
+</html>
